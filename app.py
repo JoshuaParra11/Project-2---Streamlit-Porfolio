@@ -91,6 +91,27 @@ st.markdown("""
         padding: 0;
         margin: 0;
     }
+
+    /* --- Profile Picture Styling for About Me page --- */
+    .profile-picture-container {
+        position: relative;
+        width: 200px; /* Adjust size as needed */
+        height: 200px; /* Adjust size as needed */
+        border-radius: 50%; /* Makes it circular */
+        overflow: hidden; /* Hides parts of the image outside the circle */
+        margin: 20px auto; /* Centers the image and adds some margin */
+        box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.2); /* Optional: subtle outer ring */
+    }
+
+    .profile-picture {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures the image covers the circular area */
+        border-radius: 50%; /* Ensures the image itself is circular */
+        /* Fading edge effect using a mask */
+        mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+        -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+    }
 </style>
 """, unsafe_allow_html=True)
 
