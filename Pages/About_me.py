@@ -6,76 +6,79 @@ import base64
 def render_about_me():
     st.title("About Me")
 
-    def get_image_as_base64(path):
-        with open(path, "rb") as f:
-            data = f.read()
-        return base64.b64encode(data).decode()
+    # --- Top Section Container ---
+    with st.container():
+        def get_image_as_base64(path):
+            with open(path, "rb") as f:
+                data = f.read()
+            return base64.b64encode(data).decode()
 
-    base_path = os.path.dirname(__file__)
-    project_root = os.path.join(base_path, "..")
-    image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
+        base_path = os.path.dirname(__file__)
+        project_root = os.path.join(base_path, "..")
+        image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
 
-    col_img, col_text = st.columns([1, 2])
+        col_img, col_text = st.columns([1, 2])
 
-    with col_img:
-        try:
-            image_base64 = get_image_as_base64(image_path)
-            
-            st.markdown(
-                f"""
-                <div class="profile-picture-container">
-                    <img src="data:image/jpeg;base64,{image_base64}" class="profile-picture" alt="Profile picture of the portfolio owner">
-                </div>
-                """,
-                unsafe_allow_html=True
+        with col_img:
+            try:
+                image_base64 = get_image_as_base64(image_path)
+                
+                st.markdown(
+                    f"""
+                    <div class="profile-picture-container">
+                        <img src="data:image/jpeg;base64,{image_base64}" class="profile-picture" alt="Profile picture of the portfolio owner">
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+                st.caption("A picture of me, the portfolio owner.")
+
+            except FileNotFoundError:
+                st.error("Error: Profile image not found. Please check the file path.")
+            except Exception as e:
+                st.error(f"An unexpected error occurred while loading the image: {e}")
+
+        with col_text:
+            st.write("## Hi, I'm Joshua Parra!")
+            st.write(
+                """
+                I'm a senior at MSU Denver majoring in Computer Science. I am currently learning
+                to use Streamlit to create a portfolio and be able to show current coursework from my CS39AE Data 
+                Visualization class. Some hobbies of mine are playing guitar, video games and learning about 3d
+                modeling and printing. I'm also focusing on graduating this semester while job hunting and earning
+                certification in CS fields like IT, Data Analysis, and Cloud Computing.
+
+                Feel free to explore the different sections of this portfolio to see my charts, dashboards,
+                and future aspirations.
+                """
             )
-            st.caption("A picture of me, the portfolio owner.")
 
-        except FileNotFoundError:
-            st.error("Error: Profile image not found. Please check the file path.")
-        except Exception as e:
-            st.error(f"An unexpected error occurred while loading the image: {e}")
+    # --- Bottom Section (Skills) Container ---
+    with st.container():
+        st.write("---") # Separator line
+        st.write("### Skills") # Main title for the section
 
-    with col_text:
-        st.write("## Hi, I'm Joshua Parra!")
-        st.write(
-            """
-            I'm a senior at MSU Denver majoring in Computer Science. I am currently learning
-            to use Streamlit to create a portfolio and be able to show current coursework from my CS39AE Data 
-            Visualization class. Some hobbies of mine are playing guitar, video games and learning about 3d
-            modeling and printing. I'm also focusing on graduating this semester while job hunting and earning
-            certification in CS fields like IT, Data Analysis, and Cloud Computing.
+        # Create two columns for "Courses" and "Tools"
+        col_courses, col_tools = st.columns(2)
 
-            Feel free to explore the different sections of this portfolio to see my charts, dashboards,
-            and future aspirations.
-            """
-        )
-    
-    # --- Start of updated "Skills" section ---
-    st.write("---") # Separator line
-    st.write("### Skills") # Main title for the section
+        with col_courses:
+            st.write("#### Courses")
+            st.markdown("""
+            - CS39AE Data Visualization
+            - CS3000 Algorithms
+            - CS3050 Computer Architecture
+            - CS3100 Operating Systems
+            - CS3200 Database Management
+            - CS3300 Software Engineering
+            """)
 
-    # Create two columns for "Courses" and "Tools"
-    col_courses, col_tools = st.columns(2) # Creates two columns of equal width
-
-    with col_courses:
-        st.write("#### Courses") # Subtitle for the Courses list
-        st.markdown("""
-        - CS39AE Data Visualization
-        - CS3000 Algorithms
-        - CS3050 Computer Architecture
-        - CS3100 Operating Systems
-        - CS3200 Database Management
-        - CS3300 Software Engineering
-        """)
-
-    with col_tools:
-        st.write("#### Tools") # Subtitle for the Tools list
-        st.markdown("""
-        - Python (Pandas, NumPy, Streamlit)
-        - SQL
-        - Git & GitHub
-        - VS Code
-        - Microsoft Office Suite
-        - Google Workspace
-        """)
+        with col_tools:
+            st.write("#### Tools")
+            st.markdown("""
+            - Python (Pandas, NumPy, Streamlit)
+            - SQL
+            - Git & GitHub
+            - VS Code
+            - Microsoft Office Suite
+            - Google Workspace
+            """)
