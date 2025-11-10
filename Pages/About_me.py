@@ -1,24 +1,26 @@
 import streamlit as st
 from PIL import Image
+import os # Import the 'os' module
 
 def render_about_me():
     st.title("About Me")
 
-    # Create two columns for layout: one for the image, one for the text
-    # The ratio [1, 2] means the image column will be 1/3 of the width, and text column 2/3.
     col_img, col_text = st.columns([1, 2])
 
     with col_img:
-        # Define the path to your image file within the 'assets' folder.
         image_path = "assets/cubes-3d-abstract-5k-wu.jpg"
         
+        # --- Start of new debug code ---
+        # Check if the file exists at the given path
+        if not os.path.exists(image_path):
+            st.error(f"Image not found. I am looking for it at this path: {os.path.abspath(image_path)}")
+        else:
+            st.success(f"Image found at: {os.path.abspath(image_path)}")
+        # --- End of new debug code ---
+
         try:
-            # Open the image using Pillow (PIL)
             image = Image.open(image_path)
             
-            # Display the image using st.markdown with custom HTML and CSS class.
-            # This method is used to apply the custom CSS for circular shape and fading edge.
-            # It converts the image to base64 to embed it directly into the HTML.
             st.markdown(
                 f"""
                 <div class="profile-picture-container">
@@ -29,7 +31,8 @@ def render_about_me():
             )
 
         except FileNotFoundError:
-            st.error(f"Error: Image not found at {image_path}. Please ensure the file exists.")
+            # This part is now somewhat redundant due to the check above, but we'll keep it for safety.
+            st.error(f"Error: Image could not be opened. Please ensure the file exists at {image_path}.")
         except Exception as e:
             st.error(f"An unexpected error occurred while loading the image: {e}")
 
