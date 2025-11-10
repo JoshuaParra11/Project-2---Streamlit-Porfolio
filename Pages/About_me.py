@@ -1,40 +1,35 @@
 import streamlit as st
 from PIL import Image
 import os
-import base64 # Ensure base64 is imported
+import base64
 
 def render_about_me():
     st.title("About Me")
 
-    # Helper function to get image as base64
     def get_image_as_base64(path):
         with open(path, "rb") as f:
             data = f.read()
         return base64.b64encode(data).decode()
 
-    # Construct the reliable path to the image
     base_path = os.path.dirname(__file__)
     project_root = os.path.join(base_path, "..")
     image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
 
-    # Create two columns for the main content
     col_img, col_text = st.columns([1, 2])
 
     with col_img:
         try:
-            # Get the image as a base64 string
             image_base64 = get_image_as_base64(image_path)
             
-            # Display the image using st.markdown with custom HTML and CSS class.
-            # This embeds the base64 image directly into the HTML <img> tag.
             st.markdown(
                 f"""
                 <div class="profile-picture-container">
-                    <img src="data:image/jpeg;base64,{image_base64}" class="profile-picture">
+                    <img src="data:image/jpeg;base64,{image_base64}" class="profile-picture" alt="Profile picture of the portfolio owner">
                 </div>
                 """,
                 unsafe_allow_html=True
             )
+            st.caption("A picture of me, the portfolio owner.")
 
         except FileNotFoundError:
             st.error("Error: Profile image not found. Please check the file path.")
@@ -42,23 +37,22 @@ def render_about_me():
             st.error(f"An unexpected error occurred while loading the image: {e}")
 
     with col_text:
-        st.write("## Hello there!")
+        # --- Start of updated text block ---
+        st.write("## Hi, I'm Joshua Parra!")
         st.write(
             """
-            I'm a passionate individual with a keen interest in data visualization and software development.
-            My journey in computer science has led me to explore various technologies, and I particularly
-            enjoy building interactive applications that bring data to life.
-
-            This portfolio is a collection of my work, showcasing projects from my coursework in CS39AE
-            Data Visualization. I believe in continuous learning and applying theoretical knowledge to
-            practical, real-world problems.
+            I'm a senior at MSU Denver majoring in Computer Science. I am currently learning
+            to use Streamlit to create a portfolio and be able to show current coursework from my CS39AE Data 
+            Visualization class. Some hobbies of mine are playing guitar, video games and learning about 3d
+            modeling and printing. I'm also focusing on graduating this semester while job hunting and earning
+            certification in CS fields like IT, Data Analysis, and Cloud Computing.
 
             Feel free to explore the different sections of this portfolio to see my charts, dashboards,
             and future aspirations.
             """
         )
+        # --- End of updated text block ---
     
-    # This section is now outside the columns
     st.write("---")
     st.write("### Skills")
     st.write("- Python (Pandas, NumPy, Streamlit, Plotly)")
