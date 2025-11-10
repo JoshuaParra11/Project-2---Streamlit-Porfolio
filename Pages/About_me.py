@@ -37,7 +37,6 @@ def render_about_me():
             st.error(f"An unexpected error occurred while loading the image: {e}")
 
     with col_text:
-        # --- Start of updated text block ---
         st.write("## Hi, I'm Joshua Parra!")
         st.write(
             """
@@ -51,11 +50,32 @@ def render_about_me():
             and future aspirations.
             """
         )
-        # --- End of updated text block ---
     
-    st.write("---")
-    st.write("### Skills")
-    st.write("- Python (Pandas, NumPy, Streamlit, Plotly)")
-    st.write("- Data Analysis & Visualization")
-    st.write("- Web Development Basics")
-    st.write("- Git & GitHub")
+    # --- Start of updated "Skills" section ---
+    st.write("---") # Separator line
+    st.write("### Skills") # Main title for the section
+
+    # Create two columns for "Courses" and "Tools"
+    col_courses, col_tools = st.columns(2) # Creates two columns of equal width
+
+    with col_courses:
+        st.write("#### Courses") # Subtitle for the Courses list
+        st.markdown("""
+        - CS39AE Data Visualization
+        - CS3000 Algorithms
+        - CS3050 Computer Architecture
+        - CS3100 Operating Systems
+        - CS3200 Database Management
+        - CS3300 Software Engineering
+        """)
+
+    with col_tools:
+        st.write("#### Tools") # Subtitle for the Tools list
+        st.markdown("""
+        - Python (Pandas, NumPy, Streamlit)
+        - SQL
+        - Git & GitHub
+        - VS Code
+        - Microsoft Office Suite
+        - Google Workspace
+        """)
