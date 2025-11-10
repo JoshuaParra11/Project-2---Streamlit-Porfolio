@@ -8,7 +8,7 @@ def render_about_me():
     col_img, col_text = st.columns([1, 2])
 
     with col_img:
-        base_path = os.dirname(__file__)
+        base_path = os.path.dirname(__file__)
         project_root = os.path.join(base_path, "..")
         image_path = os.path.join(project_root, "assets", "cubes-3d-abstract-5k-wu.jpg")
         
