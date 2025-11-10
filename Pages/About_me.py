@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-import os # Import the 'os' module
+import os
 
 def render_about_me():
     st.title("About Me")
@@ -8,7 +8,9 @@ def render_about_me():
     col_img, col_text = st.columns([1, 2])
 
     with col_img:
-        image_path = "assets/cubes-3d-abstract-5k-wu.jpg"
+        base_path = os.dirname(__file__)
+        project_root = os.path.join(base_path, "..")
+        image_path = os.path.join(project_root, "assets", "cubes-3d-abstract-5k-wu.jpg")
         
         # --- Start of new debug code ---
         # Check if the file exists at the given path
