@@ -94,23 +94,20 @@ st.markdown("""
 
     /* --- Profile Picture Styling for About Me page --- */
     .profile-picture-container {
-        position: relative;
-        width: 200px; /* Adjust size as needed */
-        height: 200px; /* Adjust size as needed */
-        border-radius: 50%; /* Makes it circular */
-        overflow: hidden; /* Hides parts of the image outside the circle */
-        margin: 20px auto; /* Centers the image and adds some margin */
-        box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.2); /* Optional: subtle outer ring */
+        width: 250px; /* Increased size for better effect */
+        height: 250px; /* Increased size for better effect */
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto; /* Center the container */
+        /* The background of the app is dark, so we create a gradient that fades to that color */
+        background: radial-gradient(circle, rgba(0,0,0,0) 50%, #0E1117 75%);
     }
 
     .profile-picture {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ensures the image covers the circular area */
-        border-radius: 50%; /* Ensures the image itself is circular */
-        /* Fading edge effect using a mask */
-        mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
-        -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+        object-fit: cover; /* This is key to prevent black bars */
+        border-radius: 50%;
     }
 </style>
 """, unsafe_allow_html=True)
