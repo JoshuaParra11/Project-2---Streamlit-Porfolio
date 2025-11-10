@@ -42,7 +42,7 @@ def render_about_me():
             st.write("## Hi, I'm Joshua Parra!")
             st.write(
                 """
-                I'm a senior at MSU Denver majoring in Computer Science. I am currently learning
+                I'm a senior at MSU Denver majoring in Computer Science with a minor in Mathematics. I am currently learning
                 to use Streamlit to create a portfolio and be able to show current coursework from my CS39AE Data 
                 Visualization class. Some hobbies of mine are playing guitar, video games and learning about 3d
                 modeling and printing. I'm also focusing on graduating this semester while job hunting and earning
@@ -65,20 +65,44 @@ def render_about_me():
             st.write("#### Courses")
             st.markdown("""
             - CS39AE Data Visualization
-            - CS3000 Algorithms
-            - CS3050 Computer Architecture
+            - CS4050 Algorithms & Algorithm Analysis
+            - CS3600 Operating Systems
             - CS3100 Operating Systems
-            - CS3200 Database Management
-            - CS3300 Software Engineering
+            - MTH 2410 Calculus 2
+            - MTH 3210 Probability & Statistics
             """)
 
         with col_tools:
             st.write("#### Tools")
             st.markdown("""
             - Python (Pandas, NumPy, Streamlit)
-            - SQL
+            - mySQL
             - Git & GitHub
             - VS Code
-            - Microsoft Office Suite
-            - Google Workspace
+            - MS Azure
             """)
+
+    # --- Visualization Philosophy Statement Container ---
+    with st.container():
+        st.write("---") # Separator line
+        st.write("### Visualization Philosophy Statement")
+        st.write(
+            """
+            In this project, my visualization philosophy is centered on **Clarity, Accessibility, and Ethics**.
+
+            **Clarity:** Every visualization aims to convey information directly and efficiently. Complex
+            datasets are broken down into understandable components, using appropriate chart types and minimal
+            visual clutter to ensure the message is immediately apparent to the viewer. The goal is to transform
+            raw data into actionable insights without ambiguity.
+
+            **Accessibility:** I strive to make all visualizations accessible to a broad audience, regardless of
+            their technical background or visual abilities. This includes thoughtful use of color palettes
+            (considering color blindness), clear labeling, and providing context where necessary. The design
+            prioritizes readability and ease of interpretation for everyone.
+
+            **Ethics:** Data visualization carries a significant ethical responsibility. In this project, I
+            commit to presenting data truthfully and without manipulation. Care is taken to avoid misleading
+            representations, misinterpretations, or the perpetuation of biases. The source and limitations of data
+            will be acknowledged, fostering trust and promoting responsible data storytelling.
+            """
+        )
