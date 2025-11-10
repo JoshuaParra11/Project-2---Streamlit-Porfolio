@@ -10,7 +10,7 @@ def render_about_me():
     with col_img:
         base_path = os.path.dirname(__file__)
         project_root = os.path.join(base_path, "..")
-        image_path = os.path.join(project_root, "assets", "cubes-3d-abstract-5k-wu.jpg")
+        image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
         
         # --- Start of new debug code ---
         # Check if the file exists at the given path
