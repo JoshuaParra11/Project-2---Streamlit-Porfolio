@@ -1,42 +1,45 @@
 import streamlit as st
 from PIL import Image
 import os
+import base64 # Import the base64 library
 
 def render_about_me():
     st.title("About Me")
 
+    # --- Start of updated code ---
+    # This function opens an image file and returns it as a base64 encoded string
+    def get_image_as_base64(path):
+        with open(path, "rb") as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+
+    # Construct the reliable path to the image
+    base_path = os.path.dirname(__file__)
+    project_root = os.path.join(base_path, "..")
+    image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
+
+    # Create two columns for the main content
     col_img, col_text = st.columns([1, 2])
 
     with col_img:
-        base_path = os.path.dirname(__file__)
-        project_root = os.path.join(base_path, "..")
-        image_path = os.path.join(project_root, "Assets", "cubes-3d-abstract-5k-wu.jpg")
-        
-        # --- Start of new debug code ---
-        # Check if the file exists at the given path
-        if not os.path.exists(image_path):
-            st.error(f"Image not found. I am looking for it at this path: {os.path.abspath(image_path)}")
-        else:
-            st.success(f"Image found at: {os.path.abspath(image_path)}")
-        # --- End of new debug code ---
-
         try:
-            image = Image.open(image_path)
+            # Get the image as a base64 string
+            image_base64 = get_image_as_base64(image_path)
             
+            # Display the image using st.markdown with the base64 string
             st.markdown(
                 f"""
                 <div class="profile-picture-container">
-                    <img src="data:image/jpeg;base64,{st.image(image, use_column_width=True)._repr_html_().split(',')[1].split('"')[0]}" class="profile-picture">
+                    <img src="data:image/jpeg;base64,{image_base64}" class="profile-picture">
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
         except FileNotFoundError:
-            # This part is now somewhat redundant due to the check above, but we'll keep it for safety.
-            st.error(f"Error: Image could not be opened. Please ensure the file exists at {image_path}.")
+            st.error("Error: Profile image not found. Please check the file path.")
         except Exception as e:
-            st.error(f"An unexpected error occurred while loading the image: {e}")
+            st.error(f"An error occurred: {e}")
 
     with col_text:
         st.write("## Hello there!")
@@ -54,9 +57,11 @@ def render_about_me():
             and future aspirations.
             """
         )
-        st.write("---")
-        st.write("### Skills")
-        st.write("- Python (Pandas, NumPy, Streamlit, Plotly)")
-        st.write("- Data Analysis & Visualization")
-        st.write("- Web Development Basics")
-        st.write("- Git & GitHub")
+    
+    # --- This section is now outside the columns ---
+    st.write("---")
+    st.write("### Skills")
+    st.write("- Python (Pandas, NumPy, Streamlit, Plotly)")
+    st.write("- Data Analysis & Visualization")
+    st.write("- Web Development Basics")
+    st.write("- Git & GitHub")
