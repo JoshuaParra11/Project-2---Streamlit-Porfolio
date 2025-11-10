@@ -122,7 +122,7 @@ def toggle_sidebar():
 with st.container():
     col1, col2, col3 = st.columns([1, 5, 1])
     with col1:
-        icon = "ΓåÉ" if st.session_state.sidebar_open else "Γÿ░"
+        icon = "»" if st.session_state.sidebar_open else "«"
         st.button(icon, on_click=toggle_sidebar, key="sidebar_toggle_button")
     with col2:
         st.markdown(f"<div class='top-bar-center'>{st.session_state.page}</div>", unsafe_allow_html=True)
@@ -134,33 +134,35 @@ if st.session_state.sidebar_open:
 else:
     sidebar_col, main_col = st.columns([0.05, 4.95])
 
-
 # --- Sidebar Navigation ---
 with sidebar_col:
     if st.session_state.sidebar_open:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Updated button order and labels
         if st.button("Home", use_container_width=True):
             st.session_state.page = "Home"
+            st.session_state.sidebar_open = False # Add this line
             st.rerun()
 
         if st.button("About Me", use_container_width=True):
             st.session_state.page = "About Me"
+            st.session_state.sidebar_open = False # Add this line
             st.rerun()
 
         if st.button("EDA Gallery", use_container_width=True):
             st.session_state.page = "EDA Gallery"
+            st.session_state.sidebar_open = False # Add this line
             st.rerun()
 
         if st.button("Dashboard", use_container_width=True):
             st.session_state.page = "Dashboard"
+            st.session_state.sidebar_open = False # Add this line
             st.rerun()
 
         if st.button("Future Work", use_container_width=True):
             st.session_state.page = "Future Work"
+            st.session_state.sidebar_open = False # Add this line
             st.rerun()
-
 
 # --- Page Rendering Dictionary ---
 # The dictionary is updated to include "Home" and use "About Me"
