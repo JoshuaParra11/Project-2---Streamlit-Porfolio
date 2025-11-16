@@ -102,8 +102,7 @@ st.markdown("""
 
     .stButton > button.slider-nav-button {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
+        margin-top: 150px;
         width: 36px;
         height: 36px;
         border-radius: 50%;

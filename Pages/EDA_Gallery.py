@@ -94,11 +94,11 @@ def render_eda_gallery():
     # Their visual position will be entirely controlled by CSS and JavaScript.
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("ΓÇ╣", key="prev_button_final"):
+        if st.button("<", key="prev_button_final"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
             st.rerun()
     with col2:
-        if st.button("ΓÇ║", key="next_button_final"):
+        if st.button(">", key="next_button_final"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
             st.rerun()
 
