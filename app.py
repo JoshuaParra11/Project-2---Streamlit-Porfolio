@@ -94,7 +94,13 @@ st.markdown("""
     }
 
     /* --- Toggle Button --- */
-    .sidebar-toggle {
+    /* This targets the specific button for the sidebar toggle in the top bar */
+    .custom-top-bar .stButton > button {
+        width: 40px; /* Fixed width */
+        height: 40px; /* Fixed height */
+        display: flex; /* Use flexbox for centering content */
+        align-items: center; /* Vertically center content */
+        justify-content: center; /* Horizontally center content */
         background: none;
         border: none;
         color: white;
@@ -172,7 +178,7 @@ st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
 if st.session_state.sidebar_open:
-    sidebar_col, main_col = st.columns([0.8, 4])
+    sidebar_col, main_col = st.columns([0.6, 4])
 else:
     # When closed, we still create the columns but make the first one very small
     sidebar_col, main_col = st.columns([0.05, 4.95])
