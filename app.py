@@ -149,6 +149,22 @@ st.markdown("""
         transform: scale(1.2); /* Make it slightly bigger */
         transition: transform 0.2s ease-in-out; /* Smooth transition */
     }
+
+    /* --- Main Layout Styling --- */
+    .main > .block-container > div > div > div > div {
+        /* This targets the main horizontal layout block */
+        display: flex;
+        flex-direction: row;
+    }
+    .main > .block-container > div > div > div > div > div[data-testid="stContainer"]:nth-child(1) {
+        /* This is the sidebar column */
+        width: fit-content !important; /* Shrink to content */
+        flex-shrink: 0;
+    }
+    .main > .block-container > div > div > div > div > div[data-testid="stContainer"]:nth-child(2) {
+        /* This is the main content column */
+        flex-grow: 1; /* Take up remaining space */
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -171,21 +187,9 @@ with st.container():
 st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
-# We wrap our layout in a div that we can style with CSS Flexbox
-st.markdown('<div class="main-layout">', unsafe_allow_html=True)
-
-# Define the sidebar container. It will only be shown if the sidebar is open.
-if st.session_state.sidebar_open:
-    sidebar_col = st.container()
-else:
-    # If sidebar is closed, create an empty placeholder to maintain structure
-    st.markdown('<div class="sidebar-placeholder"></div>', unsafe_allow_html=True)
-
-
-# Define the main content container
-main_col = st.container()
-
-st.markdown('</div>', unsafe_allow_html=True)
+# Always create both containers to avoid the NameError
+sidebar_col = st.container()
+main_col = st.container() 
 
 # --- Sidebar Navigation ---
 with sidebar_col:
