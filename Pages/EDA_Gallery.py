@@ -2,37 +2,70 @@ import streamlit as st
 import pandas as pd
 import os
 
-# --- Template 0: Placeholder Structure ---
-# This function defines the content for the first slide.
-def render_template_0(df):
-    """
-    Renders the structure for the first chart template:
-    Chart on top, text explanations below.
-    """
-    # --- Chart Container ---
-    with st.container():
-        st.subheader("Chart Placeholder")
-        st.write("This is where the first chart will go.")
-        st.info("Placeholder for an interactive bar chart of traffic incidents.")
+# --- Template Placeholders ---
+# Define a function for each chart template.
 
-    # --- Text Explanations Container ---
-    with st.container():
-        st.write("---") # Separator
-        st.subheader("Exploring Question: [Question for this chart]")
+def render_template_0(df):
+    """Renders the first chart template."""
+    with st.container(border=True):
+        st.subheader("Template 1: Incidents by Neighborhood")
+        st.info("Placeholder for an interactive bar chart.")
         st.markdown("""
         **How to Read This Chart:**
         - Bullet point 1
         - Bullet point 2
-        - Bullet point 3
-
+        
         **Observations & Insights:**
         - Bullet point 1
         - Bullet point 2
-        - Bullet point 3
+        """)
+
+def render_template_1(df):
+    """Renders the second chart template."""
+    with st.container(border=True):
+        st.subheader("Template 2: Incidents Over Time")
+        st.info("Placeholder for an interactive line chart.")
+        st.markdown("""
+        **How to Read This Chart:**
+        - Bullet point 1
+        - Bullet point 2
+        
+        **Observations & Insights:**
+        - Bullet point 1
+        - Bullet point 2
+        """)
+
+def render_template_2(df):
+    """Renders the third chart template."""
+    with st.container(border=True):
+        st.subheader("Template 3: Incident Type Distribution")
+        st.info("Placeholder for a pie or donut chart.")
+        st.markdown("""
+        **How to Read This Chart:**
+        - Bullet point 1
+        - Bullet point 2
+        
+        **Observations & Insights:**
+        - Bullet point 1
+        - Bullet point 2
+        """)
+
+def render_template_3(df):
+    """Renders the fourth chart template."""
+    with st.container(border=True):
+        st.subheader("Template 4: Heatmap of Incidents")
+        st.info("Placeholder for a geographical heatmap.")
+        st.markdown("""
+        **How to Read This Chart:**
+        - Bullet point 1
+        - Bullet point 2
+        
+        **Observations & Insights:**
+        - Bullet point 1
+        - Bullet point 2
         """)
 
 # --- Main Page Rendering Function ---
-# This function controls the overall page layout, data loading, and slider navigation.
 def render_eda_gallery():
     st.title("Exploratory Data Analysis (EDA) Gallery")
     
@@ -44,7 +77,7 @@ def render_eda_gallery():
     try:
         df = pd.read_csv(data_path)
     except FileNotFoundError:
-        st.error(f"Cleaned data file not found at {data_path}. Please run the data cleaning script first.")
+        st.error(f"Cleaned data file not found at {data_path}.")
         return
     except Exception as e:
         st.error(f"An error occurred while loading the data: {e}")
@@ -54,46 +87,32 @@ def render_eda_gallery():
     if 'chart_template_index' not in st.session_state:
         st.session_state.chart_template_index = 0
 
-    templates = [render_template_0]
+    # This list holds references to the functions that render each template.
+    templates = [render_template_0, render_template_1, render_template_2, render_template_3] 
     num_templates = len(templates)
 
-    # --- New Layout with JavaScript for Styling ---
+    # --- Layout for Slider Navigation ---
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
+    
+    col_prev, col_main, col_next = st.columns([1.5, 10, 1.5])
 
-    # --- Navigation Buttons (defined first, but will be positioned by CSS) ---
-    # We use st.columns to place them logically, but CSS will override their visual position.
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("<", key="prev_button_styled"):
+    with col_prev:
+        st.markdown('<div class="slider-button-col prev">', unsafe_allow_html=True)
+        if st.button("ΓÇ╣", use_container_width=True, key="prev_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
             st.rerun()
-    with col2:
-        if st.button(">", key="next_button_styled"):
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col_main:
+        # Call the function for the current template
+        current_template_func = templates[st.session_state.chart_template_index]
+        current_template_func(df)
+
+    with col_next:
+        st.markdown('<div class="slider-button-col next">', unsafe_allow_html=True)
+        if st.button("ΓÇ║", use_container_width=True, key="next_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
             st.rerun()
-
-    # --- Main Display Area ---
-    current_template_func = templates[st.session_state.chart_template_index]
-    current_template_func(df)
-
-    # --- JavaScript to apply CSS classes to the buttons ---
-    st.components.v1.html("""
-        <script>
-            // Find all button elements rendered by Streamlit
-            const buttons = window.parent.document.querySelectorAll('.stButton button');
-            
-            // Find our specific buttons by their inner text (the icon)
-            const prevButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ╣');
-            const nextButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ║');
-
-            // Apply the CSS classes
-            if (prevButton) {
-                prevButton.classList.add('slider-nav-button', 'prev');
-            }
-            if (nextButton) {
-                nextButton.classList.add('slider-nav-button', 'next');
-            }
-        </script>
-    """, height=0)
-
+        st.markdown('</div>', unsafe_allow_html=True)
+        
     st.markdown('</div>', unsafe_allow_html=True)
