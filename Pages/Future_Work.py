@@ -16,5 +16,8 @@ def render_future_work():
         st.write("---") # Separator
         st.write("### Brief Reflection: From Paper Prototype to Final Build")
         st.markdown("""
-        *[Please fill in your reflection here. Consider what changed from your Lab 4.3 paper prototype to this final build. Focus on 2-4 bullet points describing key differences, challenges, or evolutions in design/functionality.]*
+        - **Initial Design vs. Implementation:** [Describe a key difference between your paper prototype and the final Streamlit app.]
+        - **Challenges Encountered:** [Discuss a significant challenge faced during development and how it was addressed.]
+        - **Unexpected Discoveries:** [Mention something you learned or a feature that evolved unexpectedly during the build process.]
+        - **Impact of Streamlit:** [Reflect on how using Streamlit influenced the final product compared to traditional web development.]
         """)
