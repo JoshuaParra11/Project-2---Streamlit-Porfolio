@@ -91,6 +91,28 @@ st.markdown("""
         padding: 0;
         margin: 0;
     }
+    
+    /* --- Slider Navigation Styling --- */
+    .slider-container {
+        position: relative; /* Establishes a positioning context for the buttons */
+    }
+
+    .slider-button-container {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        z-index: 100;
+    }
+    
+    .slider-button-prev {
+        left: -45px; /* Position left of the main content area */
+    }
+
+    .slider-button-next {
+        right: -45px; /* Position right of the main content area */
+    }
 
     /* --- Profile Picture Styling for About Me page --- */
     .profile-picture-container {
