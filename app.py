@@ -181,29 +181,29 @@ with sidebar_col:
     if st.session_state.sidebar_open:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        if st.button("Home", use_container_width=True):
+        if st.button("Home"): # use_container_width=True removed
             st.session_state.page = "Home"
-            st.session_state.sidebar_open = False # Add this line
+            st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("About Me", use_container_width=True):
+        if st.button("About Me"): # use_container_width=True removed
             st.session_state.page = "About Me"
-            st.session_state.sidebar_open = False # Add this line
+            st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("EDA Gallery", use_container_width=True):
+        if st.button("EDA Gallery"): # use_container_width=True removed
             st.session_state.page = "EDA Gallery"
-            st.session_state.sidebar_open = False # Add this line
+            st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("Dashboard", use_container_width=True):
+        if st.button("Dashboard"): # use_container_width=True removed
             st.session_state.page = "Dashboard"
-            st.session_state.sidebar_open = False # Add this line
+            st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("Future Work", use_container_width=True):
+        if st.button("Future Work"): # use_container_width=True removed
             st.session_state.page = "Future Work"
-            st.session_state.sidebar_open = False # Add this line
+            st.session_state.sidebar_open = False
             st.rerun()
 
 # --- Page Rendering Dictionary ---
