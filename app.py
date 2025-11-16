@@ -60,9 +60,16 @@ st.markdown("""
     }
 
     /* --- Sidebar --- */
+    /* This rule now only applies the background color to the first column of stHorizontalBlock */
+    /* The border-right is removed from this general rule */
     div[data-testid="stHorizontalBlock"] > div:first-child {
-        border-right: 2px solid #30333A;
-        background-color: #0E1117;
+        background-color: #0E1117; /* subtle darker background for sidebar area */
+    }
+
+    /* This new rule specifically targets the actual Streamlit sidebar's first column to add the divider */
+    /* The Streamlit sidebar itself has a data-testid="stSidebar" */
+    div[data-testid="stSidebar"] > div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"] > div:first-child {
+        border-right: 2px solid #30333A; /* divider between sidebar and main area */
     }
 
     /* --- Sidebar Buttons --- */
