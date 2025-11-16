@@ -1,7 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import streamlit as st
 
 # Import render functions from the pages directory
-# Note the updated imports for Home and About_me
 from Pages.Home import render_home
 from Pages.About_me import render_about_me
 from Pages.EDA_Gallery import render_eda_gallery
