@@ -141,6 +141,8 @@ st.markdown("""
     .dot-container {
         display: flex;
         align-items: center;
+        justify-content: center; /* Add this line to center the dots */
+        height: 40px; /* Match the button height to ensure vertical alignment */
     }
     .dot {
         height: 10px;

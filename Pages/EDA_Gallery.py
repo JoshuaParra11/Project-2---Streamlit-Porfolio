@@ -107,7 +107,7 @@ def render_eda_gallery():
             col_prev, col_dots, col_next = st.columns([1, 2, 1])
 
             with col_prev:
-                if st.button("ΓÇ╣", key="prev_nav", use_container_width=True):
+                if st.button("ΓÇ╣", key="prev_nav"): # use_container_width=True removed
                     st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
                     st.rerun()
 
@@ -122,8 +122,6 @@ def render_eda_gallery():
                 st.markdown(dots_html, unsafe_allow_html=True)
 
             with col_next:
-                if st.button("ΓÇ║", key="next_nav", use_container_width=True):
+                if st.button("ΓÇ║", key="next_nav"): # use_container_width=True removed
                     st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
                     st.rerun()
-            
-            st.markdown('</div>', unsafe_allow_html=True)
