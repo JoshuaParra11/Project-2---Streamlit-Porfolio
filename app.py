@@ -148,16 +148,18 @@ st.markdown("""
 def toggle_sidebar():
     st.session_state.sidebar_open = not st.session_state.sidebar_open
 
-
 # --- Top Bar ---
+st.markdown('<div class="custom-top-bar">', unsafe_allow_html=True) # Add this wrapper
 with st.container():
     col1, col2, col3 = st.columns([1, 5, 1])
     with col1:
-        icon = "»" if st.session_state.sidebar_open else "«"
+        icon = "┬╗" if st.session_state.sidebar_open else "┬½"
         st.button(icon, on_click=toggle_sidebar, key="sidebar_toggle_button")
     with col2:
         st.markdown(f"<div class='top-bar-center'>{st.session_state.page}</div>", unsafe_allow_html=True)
-
+    with col3:
+        st.write("")
+st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
 if st.session_state.sidebar_open:
