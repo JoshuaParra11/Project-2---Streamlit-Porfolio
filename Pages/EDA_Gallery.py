@@ -96,32 +96,34 @@ def render_eda_gallery():
         current_template_func(df)
 
     # --- Navigation Controls Container ---
-    # This container holds the buttons and dot indicators below the chart
     with st.container():
-        # Wrap everything in a div with our custom class for styling
-        st.markdown('<div class="nav-container">', unsafe_allow_html=True)
+        # Use columns to center the navigation elements
+        _, nav_col, _ = st.columns([1, 2, 1]) # Adjusted column ratio
+        with nav_col:
+            # The nav-container div will now be centered by the column layout
+            st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 
-        # Use columns *inside* the nav-container to lay out the buttons and dots
-        col_btn_prev, col_dots, col_btn_next = st.columns([1, 3, 1])
+            # Use st.columns *inside* the nav-container for the button/dot layout
+            col_prev, col_dots, col_next = st.columns([1, 2, 1])
 
-        with col_btn_prev:
-            if st.button("ΓÇ╣", key="prev_nav", use_container_width=True):
-                st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
-                st.rerun()
+            with col_prev:
+                if st.button("ΓÇ╣", key="prev_nav", use_container_width=True):
+                    st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
+                    st.rerun()
 
-        with col_dots:
-            dots_html = '<div class="dot-container">'
-            for i in range(num_templates):
-                if i == st.session_state.chart_template_index:
-                    dots_html += '<span class="dot active"></span>'
-                else:
-                    dots_html += '<span class="dot"></span>'
-            dots_html += '</div>'
-            st.markdown(dots_html, unsafe_allow_html=True)
+            with col_dots:
+                dots_html = '<div class="dot-container">'
+                for i in range(num_templates):
+                    if i == st.session_state.chart_template_index:
+                        dots_html += '<span class="dot active"></span>'
+                    else:
+                        dots_html += '<span class="dot"></span>'
+                dots_html += '</div>'
+                st.markdown(dots_html, unsafe_allow_html=True)
 
-        with col_btn_next:
-            if st.button("ΓÇ║", key="next_nav", use_container_width=True):
-                st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
-                st.rerun()
+            with col_next:
+                if st.button("ΓÇ║", key="next_nav", use_container_width=True):
+                    st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
+                    st.rerun()
             
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
