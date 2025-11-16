@@ -97,39 +97,20 @@ st.markdown("""
     
     /* --- Slider Navigation Styling --- */
     .slider-container {
-        position: relative; /* Establishes a positioning context for the buttons */
-        /* No padding here, buttons will overlap content */
+        position: relative; /* Establishes a positioning context */
     }
-
-    /* Style for the actual Streamlit button element */
-    .stButton > button.slider-nav-button {
-        position: absolute; /* Positions the button relative to the .slider-container */
-        top: 50%; /* Moves the top of the button to the vertical center */
-        transform: translateY(-50%); /* Shifts the button up by half its height to truly center it */
-        width: 36px;  /* Small width */
-        height: 36px; /* Small height */
-        border-radius: 50%; /* Makes the button circular */
-        background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-        color: #0E1117; /* Dark text color for the icon */
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 100; /* Ensures buttons are on top of the content */
-        padding: 0; /* Remove default padding */
-        font-size: 1.2rem; /* Adjust icon size */
+    .slider-button-col {
+        /* Pull the button columns inwards over the main content */
+        margin-top: 150px; /* Adjust this value to vertically center the buttons */
+        z-index: 100; /* Ensure buttons are on top */
     }
-    .stButton > button.slider-nav-button:hover {
-        background-color: white;
+    .slider-button-col.prev {
+        margin-left: 25px;
+        margin-right: -50px;
     }
-
-    .stButton > button.slider-nav-button.prev {
-        left: -18px; /* Position half its width outside the container on the left */
-    }
-
-    .stButton > button.slider-nav-button.next {
-        right: -18px; /* Position half its width outside the container on the right */
+    .slider-button-col.next {
+        margin-left: -50px;
+        margin-right: 25px;
     }
 </style>
 """, unsafe_allow_html=True)

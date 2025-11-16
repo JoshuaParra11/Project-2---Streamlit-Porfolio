@@ -64,11 +64,11 @@ def render_eda_gallery():
     # We use st.columns to place them logically, but CSS will override their visual position.
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("ΓÇ╣", key="prev_button_styled"):
+        if st.button("<", key="prev_button_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
             st.rerun()
     with col2:
-        if st.button("ΓÇ║", key="next_button_styled"):
+        if st.button(">", key="next_button_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
             st.rerun()
 
