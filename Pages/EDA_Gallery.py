@@ -39,7 +39,7 @@ def render_eda_gallery():
     # --- Data Loading ---
     base_path = os.path.dirname(__file__)
     project_root = os.path.join(base_path, "..")
-    data_path = os.path.join(project_root, "Data", "Denver_Traffic_Accidents_cleaned.csv")
+    data_path = os.path.join(project_root, "Data", "Denver_Traffic_Clean.csv")
     
     try:
         df = pd.read_csv(data_path)
