@@ -89,47 +89,39 @@ def render_eda_gallery():
     templates = [render_template_0, render_template_1, render_template_2, render_template_3] 
     num_templates = len(templates)
 
-    # --- Navigation Buttons (defined before the content) ---
-    # We use columns here simply to get the buttons onto the page.
-    # Their visual position will be entirely controlled by CSS and JavaScript.
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("<", key="prev_button_final"):
-            st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
-            st.rerun()
-    with col2:
-        if st.button(">", key="next_button_final"):
-            st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
-            st.rerun()
+    # --- Main Display Area ---
+    # This container will hold the currently selected chart template
+    with st.container():
+        current_template_func = templates[st.session_state.chart_template_index]
+        current_template_func(df)
 
-    # --- Main Display Area with a specific ID ---
-    # We wrap the content in a div with a unique ID so our script can find it.
-    st.markdown('<div id="slider-content-wrapper">', unsafe_allow_html=True)
-    current_template_func = templates[st.session_state.chart_template_index]
-    current_template_func(df)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # --- Navigation Controls Container ---
+    # This container holds the buttons and dot indicators below the chart
+    with st.container():
+        # Use columns to center the navigation elements
+        _, nav_col, _ = st.columns([1, 3, 1])
+        with nav_col:
+            # Wrap everything in a div with our custom class for styling
+            st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 
-    # --- JavaScript to Reposition and Style Buttons ---
-    st.components.v1.html("""
-        <script>
-            const wrapper = window.parent.document.getElementById('slider-content-wrapper');
-            if (wrapper) {
-                // Find all button elements rendered by Streamlit
-                const buttons = window.parent.document.querySelectorAll('.stButton button');
-                
-                // Find our specific buttons by their inner text (the icon)
-                const prevButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ╣');
-                const nextButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ║');
+            # Previous Button
+            if st.button("ΓÇ╣", key="prev_nav"):
+                st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
+                st.rerun()
 
-                if (prevButton && nextButton) {
-                    // Move the button's parent div into our wrapper
-                    wrapper.appendChild(prevButton.closest('.stButton'));
-                    wrapper.appendChild(nextButton.closest('.stButton'));
+            # Dot Indicators
+            dots_html = '<div class="dot-container">'
+            for i in range(num_templates):
+                if i == st.session_state.chart_template_index:
+                    dots_html += '<span class="dot active"></span>'
+                else:
+                    dots_html += '<span class="dot"></span>'
+            dots_html += '</div>'
+            st.markdown(dots_html, unsafe_allow_html=True)
 
-                    // Apply the CSS classes
-                    prevButton.classList.add('slider-nav-button', 'prev');
-                    nextButton.classList.add('slider-nav-button', 'next');
-                }
-            }
-        </script>
-    """, height=0)
+            # Next Button
+            if st.button("ΓÇ║", key="next_nav"):
+                st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
+                st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)

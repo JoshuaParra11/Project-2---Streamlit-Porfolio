@@ -96,35 +96,47 @@ st.markdown("""
     }
     
     /* --- Slider Navigation Styling --- */
-    #slider-content-wrapper {
-        position: relative; /* This is the anchor for our buttons */
+    .nav-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 1rem;
     }
 
-    .stButton > button.slider-nav-button {
-        position: absolute;
-        margin-top: 150px;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.7);
-        color: #0E1117;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        z-index: 100;
+    /* Style for the Streamlit button's parent container */
+    .nav-container .stButton {
+        margin: 0 1rem; /* Adds space around the buttons */
+    }
+
+    /* Style for the actual button element */
+    .nav-container .stButton > button {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 50%; /* Makes it circular */
+        background-color: #f0f2f6;
+        color: #31333F;
+        border: 1px solid #dcdcdc;
+    }
+    .nav-container .stButton > button:hover {
+        background-color: #e6e6e6;
+    }
+
+    /* Styling for the dot indicators */
+    .dot-container {
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 0;
     }
-    .stButton > button.slider-nav-button:hover {
-        background-color: white;
+    .dot {
+        height: 10px;
+        width: 10px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 5px;
     }
-
-    .stButton > button.slider-nav-button.prev {
-        left: 5px; /* Positioned just inside the left edge */
-    }
-
-    .stButton > button.slider-nav-button.next {
-        right: 5px; /* Positioned just inside the right edge */
+    .dot.active {
+        background-color: #31333F; /* Darker color for the active dot */
     }
 </style>
 """, unsafe_allow_html=True)
