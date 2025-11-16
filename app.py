@@ -72,16 +72,18 @@ st.markdown("""
         border-right: 2px solid #30333A; /* divider between sidebar and main area */
     }
 
-    /* --- Sidebar Buttons --- */
+     /* --- Sidebar Buttons --- */
     .stButton > button {
         border: none;
-        border-bottom: 1px solid #30333A;
-        background-color: transparent;
+        border-bottom: 1px solid #30333A; /* Dividers between buttons */
+        background-color: transparent; /* No background color by default */
         color: white;
         text-align: left;
         font-size: 1rem;
         padding: 0.75rem 1rem;
-        width: 100%;
+        /* Remove width: 100%; to allow button to size to content */
+        /* width: 100%; */
+        display: inline-block; /* Allow button to shrink to content width */
     }
     .stButton > button:hover {
         background-color: #1A1D23;
@@ -160,7 +162,7 @@ st.markdown('<div class="custom-top-bar">', unsafe_allow_html=True) # Add this w
 with st.container():
     col1, col2, col3 = st.columns([1, 5, 1])
     with col1:
-        icon = "┬╗" if st.session_state.sidebar_open else "┬½"
+        icon = "<<" if st.session_state.sidebar_open else ">>"
         st.button(icon, on_click=toggle_sidebar, key="sidebar_toggle_button")
     with col2:
         st.markdown(f"<div class='top-bar-center'>{st.session_state.page}</div>", unsafe_allow_html=True)
