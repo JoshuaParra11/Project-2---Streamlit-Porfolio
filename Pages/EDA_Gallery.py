@@ -39,7 +39,7 @@ def render_eda_gallery():
     # --- Data Loading ---
     base_path = os.path.dirname(__file__)
     project_root = os.path.join(base_path, "..")
-    data_path = os.path.join(project_root, "Data", "Denver_Traffic_Clean.csv")
+    data_path = os.path.join(project_root, "Data", "Denver_Traffic_Accidents_cleaned.csv")
     
     try:
         df = pd.read_csv(data_path)
@@ -54,36 +54,46 @@ def render_eda_gallery():
     if 'chart_template_index' not in st.session_state:
         st.session_state.chart_template_index = 0
 
-    # This list holds references to the functions that render each template.
-    # We will add more functions (render_template_1, render_template_2, etc.) here later.
-    templates = [render_template_0] 
+    templates = [render_template_0]
     num_templates = len(templates)
 
-    # --- Layout for Slider Navigation ---
-    # This outer column provides a positioning context for the buttons.
-    _, center_col, _ = st.columns([1, 10, 1])
+    # --- New Layout with JavaScript for Styling ---
+    st.markdown('<div class="slider-container">', unsafe_allow_html=True)
 
-    with center_col:
-        # The slider-container div is targeted by our custom CSS in app.py
-        st.markdown('<div class="slider-container">', unsafe_allow_html=True)
-
-        # --- Main Display Area ---
-        # Call the function for the current template, passing the DataFrame to it.
-        current_template_func = templates[st.session_state.chart_template_index]
-        current_template_func(df)
-
-        # --- Navigation Buttons ---
-        # These divs are positioned by the CSS to act as button containers.
-        st.markdown('<div class="slider-button-container slider-button-prev">', unsafe_allow_html=True)
+    # --- Navigation Buttons (defined first, but will be positioned by CSS) ---
+    # We use st.columns to place them logically, but CSS will override their visual position.
+    col1, col2 = st.columns(2)
+    with col1:
         if st.button("ΓÇ╣", key="prev_button_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown('<div class="slider-button-container slider-button-next">', unsafe_allow_html=True)
+    with col2:
         if st.button("ΓÇ║", key="next_button_styled"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('</div>', unsafe_allow_html=True)
+    # --- Main Display Area ---
+    current_template_func = templates[st.session_state.chart_template_index]
+    current_template_func(df)
+
+    # --- JavaScript to apply CSS classes to the buttons ---
+    st.components.v1.html("""
+        <script>
+            // Find all button elements rendered by Streamlit
+            const buttons = window.parent.document.querySelectorAll('.stButton button');
+            
+            // Find our specific buttons by their inner text (the icon)
+            const prevButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ╣');
+            const nextButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ║');
+
+            // Apply the CSS classes
+            if (prevButton) {
+                prevButton.classList.add('slider-nav-button', 'prev');
+            }
+            if (nextButton) {
+                nextButton.classList.add('slider-nav-button', 'next');
+            }
+        </script>
+    """, height=0)
+
+    st.markdown('</div>', unsafe_allow_html=True)

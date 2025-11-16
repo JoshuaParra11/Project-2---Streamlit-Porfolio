@@ -95,41 +95,38 @@ st.markdown("""
     /* --- Slider Navigation Styling --- */
     .slider-container {
         position: relative; /* Establishes a positioning context for the buttons */
+        /* No padding here, buttons will overlap content */
     }
 
-    .slider-button-container {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 36px;
-        height: 36px;
-        z-index: 100;
+    /* Style for the actual Streamlit button element */
+    .stButton > button.slider-nav-button {
+        position: absolute; /* Positions the button relative to the .slider-container */
+        top: 50%; /* Moves the top of the button to the vertical center */
+        transform: translateY(-50%); /* Shifts the button up by half its height to truly center it */
+        width: 36px;  /* Small width */
+        height: 36px; /* Small height */
+        border-radius: 50%; /* Makes the button circular */
+        background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+        color: #0E1117; /* Dark text color for the icon */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100; /* Ensures buttons are on top of the content */
+        padding: 0; /* Remove default padding */
+        font-size: 1.2rem; /* Adjust icon size */
     }
-    
-    .slider-button-prev {
-        left: -45px; /* Position left of the main content area */
-    }
-
-    .slider-button-next {
-        right: -45px; /* Position right of the main content area */
-    }
-
-    /* --- Profile Picture Styling for About Me page --- */
-    .profile-picture-container {
-        width: 250px; /* Increased size for better effect */
-        height: 250px; /* Increased size for better effect */
-        border-radius: 50%;
-        overflow: hidden;
-        margin: auto; /* Center the container */
-        /* The background of the app is dark, so we create a gradient that fades to that color */
-        background: radial-gradient(circle, rgba(0,0,0,0) 50%, #0E1117 75%);
+    .stButton > button.slider-nav-button:hover {
+        background-color: white;
     }
 
-    .profile-picture {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* This is key to prevent black bars */
-        border-radius: 50%;
+    .stButton > button.slider-nav-button.prev {
+        left: -18px; /* Position half its width outside the container on the left */
+    }
+
+    .stButton > button.slider-nav-button.next {
+        right: -18px; /* Position half its width outside the container on the right */
     }
 </style>
 """, unsafe_allow_html=True)
