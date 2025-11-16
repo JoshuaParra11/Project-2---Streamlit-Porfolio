@@ -171,10 +171,21 @@ with st.container():
 st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
+# We wrap our layout in a div that we can style with CSS Flexbox
+st.markdown('<div class="main-layout">', unsafe_allow_html=True)
+
+# Define the sidebar container. It will only be shown if the sidebar is open.
 if st.session_state.sidebar_open:
-    sidebar_col, main_col = st.columns([1.2, 4])
+    sidebar_col = st.container()
 else:
-    sidebar_col, main_col = st.columns([0.05, 4.95])
+    # If sidebar is closed, create an empty placeholder to maintain structure
+    st.markdown('<div class="sidebar-placeholder"></div>', unsafe_allow_html=True)
+
+
+# Define the main content container
+main_col = st.container()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Sidebar Navigation ---
 with sidebar_col:
