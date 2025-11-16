@@ -65,7 +65,6 @@ def render_template_3(df):
         - Bullet point 2
         """)
 
-# --- Main Page Rendering Function ---
 def render_eda_gallery():
     st.title("Exploratory Data Analysis (EDA) Gallery")
     
@@ -87,32 +86,50 @@ def render_eda_gallery():
     if 'chart_template_index' not in st.session_state:
         st.session_state.chart_template_index = 0
 
-    # This list holds references to the functions that render each template.
     templates = [render_template_0, render_template_1, render_template_2, render_template_3] 
     num_templates = len(templates)
 
-    # --- Layout for Slider Navigation ---
-    st.markdown('<div class="slider-container">', unsafe_allow_html=True)
-    
-    col_prev, col_main, col_next = st.columns([1.5, 10, 1.5])
-
-    with col_prev:
-        st.markdown('<div class="slider-button-col prev">', unsafe_allow_html=True)
-        if st.button("ΓÇ╣", use_container_width=True, key="prev_styled"):
+    # --- Navigation Buttons (defined before the content) ---
+    # We use columns here simply to get the buttons onto the page.
+    # Their visual position will be entirely controlled by CSS and JavaScript.
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("ΓÇ╣", key="prev_button_final"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with col_main:
-        # Call the function for the current template
-        current_template_func = templates[st.session_state.chart_template_index]
-        current_template_func(df)
-
-    with col_next:
-        st.markdown('<div class="slider-button-col next">', unsafe_allow_html=True)
-        if st.button("ΓÇ║", use_container_width=True, key="next_styled"):
+    with col2:
+        if st.button("ΓÇ║", key="next_button_final"):
             st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-        
+
+    # --- Main Display Area with a specific ID ---
+    # We wrap the content in a div with a unique ID so our script can find it.
+    st.markdown('<div id="slider-content-wrapper">', unsafe_allow_html=True)
+    current_template_func = templates[st.session_state.chart_template_index]
+    current_template_func(df)
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # --- JavaScript to Reposition and Style Buttons ---
+    st.components.v1.html("""
+        <script>
+            const wrapper = window.parent.document.getElementById('slider-content-wrapper');
+            if (wrapper) {
+                // Find all button elements rendered by Streamlit
+                const buttons = window.parent.document.querySelectorAll('.stButton button');
+                
+                // Find our specific buttons by their inner text (the icon)
+                const prevButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ╣');
+                const nextButton = Array.from(buttons).find(btn => btn.innerText === 'ΓÇ║');
+
+                if (prevButton && nextButton) {
+                    // Move the button's parent div into our wrapper
+                    wrapper.appendChild(prevButton.closest('.stButton'));
+                    wrapper.appendChild(nextButton.closest('.stButton'));
+
+                    // Apply the CSS classes
+                    prevButton.classList.add('slider-nav-button', 'prev');
+                    nextButton.classList.add('slider-nav-button', 'next');
+                }
+            }
+        </script>
+    """, height=0)

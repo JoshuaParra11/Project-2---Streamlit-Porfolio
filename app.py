@@ -96,21 +96,36 @@ st.markdown("""
     }
     
     /* --- Slider Navigation Styling --- */
-    .slider-container {
-        position: relative; /* Establishes a positioning context */
+    #slider-content-wrapper {
+        position: relative; /* This is the anchor for our buttons */
     }
-    .slider-button-col {
-        /* Pull the button columns inwards over the main content */
-        margin-top: 150px; /* Adjust this value to vertically center the buttons */
-        z-index: 100; /* Ensure buttons are on top */
+
+    .stButton > button.slider-nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #0E1117;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
-    .slider-button-col.prev {
-        margin-left: 25px;
-        margin-right: -50px;
+    .stButton > button.slider-nav-button:hover {
+        background-color: white;
     }
-    .slider-button-col.next {
-        margin-left: -50px;
-        margin-right: 25px;
+
+    .stButton > button.slider-nav-button.prev {
+        left: 5px; /* Positioned just inside the left edge */
+    }
+
+    .stButton > button.slider-nav-button.next {
+        right: 5px; /* Positioned just inside the right edge */
     }
 </style>
 """, unsafe_allow_html=True)
