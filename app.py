@@ -137,6 +137,8 @@ st.markdown("""
     }
     .dot.active {
         background-color: #31333F; /* Darker color for the active dot */
+        transform: scale(1.2); /* Make it slightly bigger */
+        transition: transform 0.2s ease-in-out; /* Smooth transition */
     }
 </style>
 """, unsafe_allow_html=True)

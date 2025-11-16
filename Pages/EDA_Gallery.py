@@ -98,18 +98,18 @@ def render_eda_gallery():
     # --- Navigation Controls Container ---
     # This container holds the buttons and dot indicators below the chart
     with st.container():
-        # Use columns to center the navigation elements
-        _, nav_col, _ = st.columns([1, 3, 1])
-        with nav_col:
-            # Wrap everything in a div with our custom class for styling
-            st.markdown('<div class="nav-container">', unsafe_allow_html=True)
+        # Wrap everything in a div with our custom class for styling
+        st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 
-            # Previous Button
-            if st.button("ΓÇ╣", key="prev_nav"):
+        # Use columns *inside* the nav-container to lay out the buttons and dots
+        col_btn_prev, col_dots, col_btn_next = st.columns([1, 3, 1])
+
+        with col_btn_prev:
+            if st.button("ΓÇ╣", key="prev_nav", use_container_width=True):
                 st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
                 st.rerun()
 
-            # Dot Indicators
+        with col_dots:
             dots_html = '<div class="dot-container">'
             for i in range(num_templates):
                 if i == st.session_state.chart_template_index:
@@ -119,9 +119,9 @@ def render_eda_gallery():
             dots_html += '</div>'
             st.markdown(dots_html, unsafe_allow_html=True)
 
-            # Next Button
-            if st.button("ΓÇ║", key="next_nav"):
+        with col_btn_next:
+            if st.button("ΓÇ║", key="next_nav", use_container_width=True):
                 st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
                 st.rerun()
             
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
