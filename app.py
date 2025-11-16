@@ -172,7 +172,7 @@ st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
 if st.session_state.sidebar_open:
-    sidebar_col, main_col = st.columns([1.2, 4])
+    sidebar_col, main_col = st.columns([0.8, 4])
 else:
     # When closed, we still create the columns but make the first one very small
     sidebar_col, main_col = st.columns([0.05, 4.95])
