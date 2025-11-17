@@ -4,10 +4,6 @@ import plotly.express as px
 import os
 from datetime import datetime
 
-# --- Page Configuration ---
-# The render_dashboard function will be called from app.py
-# st.set_page_config(layout="wide") is already in app.py
-
 # --- Data Loading and Caching ---
 @st.cache_data
 def load_data():
@@ -45,22 +41,24 @@ def render_dashboard():
         st.warning("Dashboard cannot be displayed because the data could not be loaded.")
         return
 
-    # --- Sidebar Filters ---
-    st.sidebar.header("Dashboard Filters")
-
-    # Date Range Filter
-    min_date = df["reported_date"].min().date()
-    max_date = df["reported_date"].max().date()
-    start_date = st.sidebar.date_input("Start Date", min_date, min_value=min_date, max_value=max_date)
-    end_date = st.sidebar.date_input("End Date", max_date, min_value=start_date, max_value=max_date)
-
-    # Neighborhood Multiselect Filter
-    neighborhoods = sorted(df["neighborhood_id"].dropna().unique())
-    selected_neighborhoods = st.sidebar.multiselect(
-        "Neighborhoods",
-        options=neighborhoods,
-        default=neighborhoods[:5] # Default to first 5 for demonstration
-    )
+    # --- Main Page Filters ---
+    with st.expander("Dashboard Filters", expanded=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            # Date Range Filter
+            min_date = df["reported_date"].min().date()
+            max_date = df["reported_date"].max().date()
+            start_date = st.date_input("Start Date", min_date, min_value=min_date, max_value=max_date)
+            end_date = st.date_input("End Date", max_date, min_value=start_date, max_value=max_date)
+        
+        with col2:
+            # Neighborhood Multiselect Filter
+            neighborhoods = sorted(df["neighborhood_id"].dropna().unique())
+            selected_neighborhoods = st.multiselect(
+                "Neighborhoods",
+                options=neighborhoods,
+                default=neighborhoods[:5] # Default to first 5 for demonstration
+            )
 
     # --- Filtering Logic ---
     # Convert start_date and end_date to datetime for comparison
