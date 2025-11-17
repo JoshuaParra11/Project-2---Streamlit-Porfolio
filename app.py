@@ -95,7 +95,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        background: none;
+        background: blue;
         border: none;
         color: white;
         font-size: 1.5rem;
