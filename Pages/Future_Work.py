@@ -39,3 +39,14 @@ def render_future_work():
                     such as node, along with javascript that offer more features that are modern and scalable in a more website
                     developing traditional workflow.
         """)
+
+    st.write("---")
+    with st.container(border=True):
+        st.subheader("Ethical Considerations Note")
+        st.markdown(
+            """
+            This dataset includes records of real traffic incidents involving people, so results must be interpreted carefully. 
+            Because the data comes from official incident reports, it may contain reporting biases and does not capture near-misses or unreported accidents. 
+            The visualizations show patterns in the aggregate data but should not be used to make judgments about individual drivers or to generalize about the safety of specific locations without further context.
+            """
+        )

@@ -117,7 +117,8 @@ def type_distribution(df):
         names='Incident Type',
         values='Count',
         title='Top 5 Most Common Incident Types',
-        hole=0.3
+        hole=0.3,
+        color_discrete_sequence=px.colors.qualitative.Safe # Explicitly use a color-blind safe palette
     )
     
     fig.update_traces(textposition='inside', textinfo='percent+label')
@@ -145,12 +146,10 @@ def type_distribution(df):
 def incident_hour_by_day(df):
     st.subheader("Distribution of Incident Hour by Day of the Week")
 
-    # Create 'hour' and 'day_of_week' columns
     plot_df = df.copy()
     plot_df['hour'] = plot_df['reported_date'].dt.hour
     plot_df['day_of_week'] = plot_df['reported_date'].dt.day_name()
 
-    # Define the correct order for the days of the week
     day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
     fig = px.box(
@@ -158,9 +157,10 @@ def incident_hour_by_day(df):
         x='day_of_week',
         y='hour',
         color='day_of_week',
-        category_orders={"day_of_week": day_order}, # Enforce the order
+        category_orders={"day_of_week": day_order},
         title='Distribution of Incident Hour by Day',
-        labels={'day_of_week': 'Day of the Week', 'hour': 'Hour of Day (24-hour format)'}
+        labels={'day_of_week': 'Day of the Week', 'hour': 'Hour of Day (24-hour format)'},
+        color_discrete_sequence=px.colors.qualitative.Safe # Explicitly use a color-blind safe palette
     )
     
     fig.update_layout(showlegend=False)
@@ -174,15 +174,14 @@ def incident_hour_by_day(df):
             - **Each Box:** Represents the distribution of incident hours for that day.
             - **Box Height (IQR):** The middle 50% of incidents occurred within this hour range.
             - **Line in Box:** The median hour for an incident.
-            - **Whiskers:** The typical range of incident hours, excluding outliers.
             """
         )
     with right:
         st.subheader("Insights")
         st.markdown(
             """
-            - **Weekday Pattern:** On weekdays, the median incident time is in the late afternoon (around 4-5 PM), aligning with the evening rush hour. The box is large, showing incidents are common throughout the workday.
-            - **Weekend Pattern:** On weekends, the median incident time shifts later into the evening. Saturday, in particular, shows a wider distribution, with incidents occurring later at night.
+            - **Weekday Pattern:** On weekdays, the median incident time is in the late afternoon (around 4-5 PM), aligning with the evening rush hour.
+            - **Weekend Pattern:** On weekends, the median incident time shifts later into the evening, with a wider distribution of incident times.
             """
         )
 
@@ -206,3 +205,14 @@ def render_eda_gallery():
     
     st.write("---")
     incident_hour_by_day(df)
+
+    st.write("---")
+    with st.container(border=True):
+        st.subheader("Ethical Considerations Note")
+        st.markdown(
+            """
+            This dataset includes records of real traffic incidents involving people, so results must be interpreted carefully. 
+            Because the data comes from official incident reports, it may contain reporting biases and does not capture near-misses or unreported accidents. 
+            The visualizations show patterns in the aggregate data but should not be used to make judgments about individual drivers or to generalize about the safety of specific locations without further context.
+            """
+        )

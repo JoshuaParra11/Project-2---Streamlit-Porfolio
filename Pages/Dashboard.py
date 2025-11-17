@@ -84,7 +84,6 @@ def render_dashboard():
     total_incidents = filtered_df.shape[0]
     total_serious_injuries = filtered_df['SERIOUSLY_INJURED'].sum()
     
-    # Calculate injury rate, handle division by zero
     injury_rate = (total_serious_injuries / total_incidents * 100) if total_incidents > 0 else 0
 
     with kpi1:
@@ -130,7 +129,7 @@ def render_dashboard():
             orientation='h',
             title="Traffic Incidents by Light Condition",
             color="Incident Count",
-            color_continuous_scale=px.colors.sequential.Viridis
+            color_continuous_scale=px.colors.sequential.Viridis # Viridis is color-blind safe
         )
         fig.update_layout(
             yaxis={'categoryorder':'total ascending'},
@@ -154,10 +153,18 @@ def render_dashboard():
 
     st.write("---")
 
-    # --- Reproducibility Section ---
-    st.header("Reproducibility")
-    col_left, col_right = st.columns(2)
-    with col_left:
-        st.markdown("Source: [Denver Open Data Catalog - Traffic Accidents](https://www.denvergov.org/opendata/dataset/city-and-county-of-denver-traffic-accidents)")
-    with col_right:
-        st.markdown(f"Last refreshed: **{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}**")
+    # --- Reproducibility & Ethics ---
+    st.header("Data Source & Ethical Considerations")
+    
+    st.markdown("Source: [Denver Open Data Catalog - Traffic Accidents](https://www.denvergov.org/opendata/dataset/city-and-county-of-denver-traffic-accidents)")
+    st.markdown(f"Last refreshed: **{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}**")
+
+    with st.container(border=True):
+        st.subheader("Ethics Note")
+        st.markdown(
+            """
+            This dataset includes records of real traffic incidents involving people, so results must be interpreted carefully. 
+            Because the data comes from official incident reports, it may contain reporting biases and does not capture near-misses or unreported accidents. 
+            The visualizations show patterns in the aggregate data but should not be used to make judgments about individual drivers or to generalize about the safety of specific locations without further context.
+            """
+        )
