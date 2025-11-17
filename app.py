@@ -60,30 +60,24 @@ st.markdown("""
     }
 
     /* --- Sidebar --- */
-    /* This rule now only applies the background color to the first column of stHorizontalBlock */
-    /* The border-right is removed from this general rule */
     div[data-testid="stHorizontalBlock"] > div:first-child {
-        background-color: #0E1117; /* subtle darker background for sidebar area */
+        background-color: #0E1117;
     }
 
-    /* This new rule specifically targets the actual Streamlit sidebar's first column to add the divider */
-    /* The Streamlit sidebar itself has a data-testid="stSidebar" */
     div[data-testid="stSidebar"] > div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"] > div:first-child {
-        border-right: 2px solid #30333A; /* divider between sidebar and main area */
+        border-right: 2px solid #30333A;
     }
 
      /* --- Sidebar Buttons --- */
     .stButton > button {
         border: none;
-        border-bottom: 1px solid #30333A; /* Dividers between buttons */
-        background-color: transparent; /* No background color by default */
+        border-bottom: 1px solid #30333A;
+        background-color: transparent;
         color: white;
         text-align: left;
         font-size: 1rem;
         padding: 0.75rem 1rem;
-        /* Remove width: 100%; to allow button to size to content */
-        /* width: 100%; */
-        display: inline-block; /* Allow button to shrink to content width */
+        display: inline-block;
     }
     .stButton > button:hover {
         background-color: #1A1D23;
@@ -94,13 +88,13 @@ st.markdown("""
     }
 
     /* --- Toggle Button --- */
-    /* This targets the specific button for the sidebar toggle in the top bar */
-    .custom-top-bar .stButton > button {
-        width: 40px; /* Fixed width */
-        height: 40px; /* Fixed height */
-        display: flex; /* Use flexbox for centering content */
-        align-items: center; /* Vertically center content */
-        justify-content: center; /* Horizontally center content */
+    /* This targets ONLY the toggle button by its container and gives it a fixed size */
+    .toggle-button-container .stButton > button {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: none;
         border: none;
         color: white;
@@ -118,17 +112,15 @@ st.markdown("""
         padding-top: 1rem;
     }
 
-    /* Style for the Streamlit button's parent container */
     .nav-container .stButton {
-        margin: 0 1rem; /* Adds space around the buttons */
+        margin: 0 1rem;
     }
 
-    /* Style for the actual button element */
     .nav-container .stButton > button {
         width: 40px;
         height: 40px;
         padding: 0;
-        border-radius: 50%; /* Makes it circular */
+        border-radius: 50%;
         background-color: #f0f2f6;
         color: #31333F;
         border: 1px solid #dcdcdc;
@@ -141,8 +133,8 @@ st.markdown("""
     .dot-container {
         display: flex;
         align-items: center;
-        justify-content: center; /* Add this line to center the dots */
-        height: 40px; /* Match the button height to ensure vertical alignment */
+        justify-content: center;
+        height: 40px;
     }
     .dot {
         height: 10px;
@@ -153,9 +145,9 @@ st.markdown("""
         margin: 0 5px;
     }
     .dot.active {
-        background-color: #31333F; /* Darker color for the active dot */
-        transform: scale(1.2); /* Make it slightly bigger */
-        transition: transform 0.2s ease-in-out; /* Smooth transition */
+        background-color: #31333F;
+        transform: scale(1.2);
+        transition: transform 0.2s ease-in-out;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -166,23 +158,23 @@ def toggle_sidebar():
     st.session_state.sidebar_open = not st.session_state.sidebar_open
 
 # --- Top Bar ---
-st.markdown('<div class="custom-top-bar">', unsafe_allow_html=True) # Add this wrapper
 with st.container():
     col1, col2, col3 = st.columns([1, 5, 1])
     with col1:
+        # Wrap the button in a div with a specific class
+        st.markdown('<div class="toggle-button-container">', unsafe_allow_html=True)
         icon = "<<" if st.session_state.sidebar_open else ">>"
         st.button(icon, on_click=toggle_sidebar, key="sidebar_toggle_button")
+        st.markdown('</div>', unsafe_allow_html=True)
     with col2:
         st.markdown(f"<div class='top-bar-center'>{st.session_state.page}</div>", unsafe_allow_html=True)
     with col3:
         st.write("")
-st.markdown('</div>', unsafe_allow_html=True) # Close the wrapper
 
 # --- Layout with Custom Sidebar ---
 if st.session_state.sidebar_open:
     sidebar_col, main_col = st.columns([0.6, 4])
 else:
-    # When closed, we still create the columns but make the first one very small
     sidebar_col, main_col = st.columns([0.05, 4.95])
 
 # --- Sidebar Navigation ---
@@ -190,33 +182,32 @@ with sidebar_col:
     if st.session_state.sidebar_open:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        if st.button("Home"): # use_container_width=True removed
+        if st.button("Home"):
             st.session_state.page = "Home"
             st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("About Me"): # use_container_width=True removed
+        if st.button("About Me"):
             st.session_state.page = "About Me"
             st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("EDA Gallery"): # use_container_width=True removed
+        if st.button("EDA Gallery"):
             st.session_state.page = "EDA Gallery"
             st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("Dashboard"): # use_container_width=True removed
+        if st.button("Dashboard"):
             st.session_state.page = "Dashboard"
             st.session_state.sidebar_open = False
             st.rerun()
 
-        if st.button("Future Work"): # use_container_width=True removed
+        if st.button("Future Work"):
             st.session_state.page = "Future Work"
             st.session_state.sidebar_open = False
             st.rerun()
 
 # --- Page Rendering Dictionary ---
-# The dictionary is updated to include "Home" and use "About Me"
 page_renderer = {
     "Home": render_home,
     "About Me": render_about_me,
@@ -228,6 +219,5 @@ page_renderer = {
 # --- Render the Selected Page in the Main Column ---
 with main_col:
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
-    # This calls the correct render function based on the current page in session state
     page_renderer[st.session_state.page]()
     st.markdown('</div>', unsafe_allow_html=True)
