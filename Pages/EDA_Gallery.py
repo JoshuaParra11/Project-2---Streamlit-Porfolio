@@ -13,8 +13,6 @@ def load_eda_data():
         df = pd.read_csv(data_path)
         df["reported_date"] = pd.to_datetime(df["reported_date"], errors='coerce')
         df.dropna(subset=["reported_date"], inplace=True)
-        # Ensure injury column is numeric
-        df['SERIOUSLY_INJURED'] = pd.to_numeric(df['SERIOUSLY_INJURED'], errors='coerce').fillna(0)
         return df
     except Exception as e:
         st.error(f"Error loading data for EDA Gallery: {e}")
@@ -144,26 +142,28 @@ def type_distribution(df):
         )
 
 
-def injuries_by_light_condition(df):
-    st.subheader("Distribution of Injuries by Light Condition")
+def incident_hour_by_day(df):
+    st.subheader("Distribution of Incident Hour by Day of the Week")
 
-    # Filter out rows where injuries are 0 to make the box plot more readable
-    injured_df = df[df['SERIOUSLY_INJURED'] > 0]
+    # Create 'hour' and 'day_of_week' columns
+    plot_df = df.copy()
+    plot_df['hour'] = plot_df['reported_date'].dt.hour
+    plot_df['day_of_week'] = plot_df['reported_date'].dt.day_name()
 
-    if injured_df.empty:
-        st.info("No incidents with serious injuries to display in the box plot.")
-        return
-
+    # Define the correct order for the days of the week
+    day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    
     fig = px.box(
-        injured_df,
-        x='LIGHT_CONDITION',
-        y='SERIOUSLY_INJURED',
-        color='LIGHT_CONDITION',
-        title='Serious Injury Distribution per Light Condition',
-        labels={'LIGHT_CONDITION': 'Light Condition', 'SERIOUSLY_INJURED': 'Number of Serious Injuries'}
+        plot_df,
+        x='day_of_week',
+        y='hour',
+        color='day_of_week',
+        category_orders={"day_of_week": day_order}, # Enforce the order
+        title='Distribution of Incident Hour by Day',
+        labels={'day_of_week': 'Day of the Week', 'hour': 'Hour of Day (24-hour format)'}
     )
     
-    fig.update_layout(xaxis={'categoryorder':'total descending'})
+    fig.update_layout(showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
     left, right = st.columns(2)
@@ -171,19 +171,18 @@ def injuries_by_light_condition(df):
         st.subheader("How to Read This Chart")
         st.markdown(
             """
-            - **Box:** Represents the interquartile range (IQR), where the middle 50% of the data points lie.
-            - **Line in Box:** The median number of injuries.
-            - **Whiskers:** Show the range of the data, excluding outliers.
-            - **Dots:** Individual data points that are considered outliers.
+            - **Each Box:** Represents the distribution of incident hours for that day.
+            - **Box Height (IQR):** The middle 50% of incidents occurred within this hour range.
+            - **Line in Box:** The median hour for an incident.
+            - **Whiskers:** The typical range of incident hours, excluding outliers.
             """
         )
     with right:
         st.subheader("Insights")
         st.markdown(
             """
-            - **Severity:** While 'Daylight' has the most incidents, this chart shows the *distribution* of injury counts for the accidents in each condition.
-            - **Median:** The median for most categories is 1, indicating that when an injury occurs, it's typically a single person.
-            - **Outliers:** Note the outliers in each category, representing the less common but more severe multi-injury incidents.
+            - **Weekday Pattern:** On weekdays, the median incident time is in the late afternoon (around 4-5 PM), aligning with the evening rush hour. The box is large, showing incidents are common throughout the workday.
+            - **Weekend Pattern:** On weekends, the median incident time shifts later into the evening. Saturday, in particular, shows a wider distribution, with incidents occurring later at night.
             """
         )
 
@@ -206,4 +205,4 @@ def render_eda_gallery():
     type_distribution(df)
     
     st.write("---")
-    injuries_by_light_condition(df)
+    incident_hour_by_day(df)
