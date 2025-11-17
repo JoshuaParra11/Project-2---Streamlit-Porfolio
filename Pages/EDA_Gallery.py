@@ -13,6 +13,8 @@ def load_eda_data():
         df = pd.read_csv(data_path)
         df["reported_date"] = pd.to_datetime(df["reported_date"], errors='coerce')
         df.dropna(subset=["reported_date"], inplace=True)
+        # Ensure injury column is numeric
+        df['SERIOUSLY_INJURED'] = pd.to_numeric(df['SERIOUSLY_INJURED'], errors='coerce').fillna(0)
         return df
     except Exception as e:
         st.error(f"Error loading data for EDA Gallery: {e}")
@@ -27,7 +29,6 @@ def neighborhood_incidents(df):
         st.error("Column 'neighborhood_id' not found in dataset.")
         return
 
-    # Correctly create and rename the counts DataFrame
     counts = (
         df["neighborhood_id"]
         .dropna()
@@ -57,7 +58,7 @@ def neighborhood_incidents(df):
             """
             - **Y-axis:** Top 15 neighborhoods with the most incidents.
             - **X-axis:** Total number of recorded incidents.
-            - **Insight:** A small number of neighborhoods, particularly Five Points and Stapleton, account for a disproportionately high number of traffic incidents.
+            - **Insight:** A small number of neighborhoods account for a disproportionately high number of traffic incidents.
             """
         )
     with right:
@@ -65,7 +66,7 @@ def neighborhood_incidents(df):
         st.markdown(
             """
             - **Concentration:** Incident counts are heavily concentrated in a few central and high-traffic neighborhoods.
-            - **Outliers:** Five Points stands out as a significant outlier, suggesting it may be a key area for traffic safety initiatives.
+            - **Outliers:** Five Points stands out as a significant outlier.
             - **Distribution:** There is a sharp drop-off in incident counts after the top 5-7 neighborhoods.
             """
         )
@@ -74,7 +75,6 @@ def neighborhood_incidents(df):
 def incidents_over_time(df):
     st.subheader("Incidents Over Time")
     
-    # Resample data by month for a clearer trend
     time_series_df = df.set_index('reported_date').resample('ME').size().reset_index(name='Incident Count')
 
     fig = px.line(
@@ -102,8 +102,8 @@ def incidents_over_time(df):
         st.subheader("Insights")
         st.markdown(
             """
-            - **Seasonality:** Observe peaks and troughs that may correspond to seasonal changes (e.g., winter weather, summer holidays).
-            - **Trends:** Look for any long-term upward or downward trends in accident frequency over the years.
+            - **Seasonality:** Observe peaks and troughs that may correspond to seasonal changes.
+            - **Trends:** Look for any long-term upward or downward trends in accident frequency.
             """
         )
 
@@ -132,7 +132,6 @@ def type_distribution(df):
             """
             - **Slices:** Each slice represents a category of traffic offense.
             - **Size:** The size of the slice corresponds to its proportion of the total incidents.
-            - **Labels:** Show the percentage and name for each category.
             """
         )
     with right:
@@ -140,28 +139,31 @@ def type_distribution(df):
         st.markdown(
             """
             - **Dominance:** General traffic accidents (`TRAF - ACCIDENT`) form the vast majority of incidents.
-            - **Hit & Run:** "Hit & Run" incidents represent a significant portion, highlighting a common issue of drivers leaving the scene.
+            - **Hit & Run:** "Hit & Run" incidents represent a significant portion of offenses.
             """
         )
 
 
-def heatmap_incidents(df):
-    st.subheader("Geographical Heatmap of Incidents")
-    
-    map_df = df[['geo_lat', 'geo_lon']].dropna()
-    map_df.columns = ['lat', 'lon']
+def injuries_by_light_condition(df):
+    st.subheader("Distribution of Injuries by Light Condition")
 
-    fig = px.density_mapbox(
-        map_df,
-        lat='lat',
-        lon='lon',
-        radius=8,
-        center=dict(lat=39.7392, lon=-104.9903),
-        zoom=10,
-        mapbox_style="carto-positron",
-        title="Heatmap of Incident Density"
+    # Filter out rows where injuries are 0 to make the box plot more readable
+    injured_df = df[df['SERIOUSLY_INJURED'] > 0]
+
+    if injured_df.empty:
+        st.info("No incidents with serious injuries to display in the box plot.")
+        return
+
+    fig = px.box(
+        injured_df,
+        x='LIGHT_CONDITION',
+        y='SERIOUSLY_INJURED',
+        color='LIGHT_CONDITION',
+        title='Serious Injury Distribution per Light Condition',
+        labels={'LIGHT_CONDITION': 'Light Condition', 'SERIOUSLY_INJURED': 'Number of Serious Injuries'}
     )
     
+    fig.update_layout(xaxis={'categoryorder':'total descending'})
     st.plotly_chart(fig, use_container_width=True)
 
     left, right = st.columns(2)
@@ -169,17 +171,19 @@ def heatmap_incidents(df):
         st.subheader("How to Read This Chart")
         st.markdown(
             """
-            - **Map:** A geographical map of Denver.
-            - **Color Intensity:** Brighter, "hotter" areas indicate a higher concentration of traffic incidents.
-            - **Zoom/Pan:** The map is interactive; you can zoom in to explore specific hotspots.
+            - **Box:** Represents the interquartile range (IQR), where the middle 50% of the data points lie.
+            - **Line in Box:** The median number of injuries.
+            - **Whiskers:** Show the range of the data, excluding outliers.
+            - **Dots:** Individual data points that are considered outliers.
             """
         )
     with right:
         st.subheader("Insights")
         st.markdown(
             """
-            - **Hotspots:** Major highways (like I-25) and central downtown arteries are clear hotspots for accidents.
-            - **Corridors:** High-density corridors are visible along major roads such as Colfax Ave and Federal Blvd.
+            - **Severity:** While 'Daylight' has the most incidents, this chart shows the *distribution* of injury counts for the accidents in each condition.
+            - **Median:** The median for most categories is 1, indicating that when an injury occurs, it's typically a single person.
+            - **Outliers:** Note the outliers in each category, representing the less common but more severe multi-injury incidents.
             """
         )
 
@@ -202,4 +206,4 @@ def render_eda_gallery():
     type_distribution(df)
     
     st.write("---")
-    heatmap_incidents(df)
+    injuries_by_light_condition(df)
