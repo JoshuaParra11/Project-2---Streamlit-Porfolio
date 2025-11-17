@@ -1,127 +1,131 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 import os
 
-# --- Template Placeholders ---
-# Define a function for each chart template.
 
-def render_template_0(df):
-    """Renders the first chart template."""
-    with st.container(border=True):
-        st.subheader("Template 1: Incidents by Neighborhood")
-        st.info("Placeholder for an interactive bar chart.")
-        st.markdown("""
-        **How to Read This Chart:**
-        - Bullet point 1
-        - Bullet point 2
-        
-        **Observations & Insights:**
-        - Bullet point 1
-        - Bullet point 2
-        """)
+def neighborhood_incidents(df):
+    st.subheader("Incidents by Neighborhood")
 
-def render_template_1(df):
-    """Renders the second chart template."""
-    with st.container(border=True):
-        st.subheader("Template 2: Incidents Over Time")
-        st.info("Placeholder for an interactive line chart.")
-        st.markdown("""
-        **How to Read This Chart:**
-        - Bullet point 1
-        - Bullet point 2
-        
-        **Observations & Insights:**
-        - Bullet point 1
-        - Bullet point 2
-        """)
+    if "neighborhood_id" not in df.columns:
+        st.error("Column 'neighborhood_id' not found in dataset.")
+        return
 
-def render_template_2(df):
-    """Renders the third chart template."""
-    with st.container(border=True):
-        st.subheader("Template 3: Incident Type Distribution")
-        st.info("Placeholder for a pie or donut chart.")
-        st.markdown("""
-        **How to Read This Chart:**
-        - Bullet point 1
-        - Bullet point 2
-        
-        **Observations & Insights:**
-        - Bullet point 1
-        - Bullet point 2
-        """)
+    counts = (
+        df["neighborhood_id"]
+        .dropna()
+        .value_counts()
+        .nlargest(15)
+        .reset_index()
+        .rename(columns={"index": "Neighborhood", "neighborhood_id": "Incident Count"})
+    )
 
-def render_template_3(df):
-    """Renders the fourth chart template."""
-    with st.container(border=True):
-        st.subheader("Template 4: Heatmap of Incidents")
-        st.info("Placeholder for a geographical heatmap.")
-        st.markdown("""
+    fig = px.bar(
+        counts,
+        x="Incident Count",
+        y="Neighborhood",
+        orientation="h",
+        title="Top 15 Neighborhoods by Traffic Incident Count",
+        color="Incident Count",
+        color_continuous_scale=px.colors.sequential.Viridis,
+    )
+
+    fig.update_layout(yaxis={"categoryorder": "total ascending"})
+    st.plotly_chart(fig, use_container_width=True)
+
+    left, right = st.columns(2)
+
+    with left:
+        st.subheader("How to Read This Chart")
+        st.markdown(
+            """
+            - **Y-axis:** Top 15 neighborhoods.
+            - **X-axis:** Total recorded incident count.
+            - **Bar length and color:** Longer + lighter = more incidents.
+            - **Hover:** Shows exact values.
+            """
+        )
+
+    with right:
+        st.subheader("Insights")
+        st.markdown(
+            """
+            - A few neighborhoods account for most incidents.
+            - **Five Points, Stapleton, CBD** consistently lead.
+            - Sharp drop after the top 5–7 areas.
+            - **Five Points** appears as an outlier.
+            """
+        )
+
+
+def incidents_over_time(df):
+    st.subheader("Incidents Over Time")
+    st.info("Placeholder for an interactive time series chart.")
+    st.markdown(
+        """
         **How to Read This Chart:**
-        - Bullet point 1
+        - Bullet point 1  
         - Bullet point 2
-        
-        **Observations & Insights:**
-        - Bullet point 1
+
+        **Insights:**
+        - Bullet point 1  
         - Bullet point 2
-        """)
+        """
+    )
+
+
+def type_distribution(df):
+    st.subheader("Incident Type Distribution")
+    st.info("Placeholder for a pie or donut chart.")
+    st.markdown(
+        """
+        **How to Read This Chart:**
+        - Bullet point 1  
+        - Bullet point 2
+
+        **Insights:**
+        - Bullet point 1  
+        - Bullet point 2
+        """
+    )
+
+
+def heatmap_incidents(df):
+    st.subheader("Heatmap of Incidents")
+    st.info("Placeholder for a geographical heatmap.")
+    st.markdown(
+        """
+        **How to Read This Chart:**
+        - Bullet point 1  
+        - Bullet point 2
+
+        **Insights:**
+        - Bullet point 1  
+        - Bullet point 2
+        """
+    )
+
 
 def render_eda_gallery():
     st.title("Exploratory Data Analysis (EDA) Gallery")
-    
-    # --- Data Loading ---
+
     base_path = os.path.dirname(__file__)
     project_root = os.path.join(base_path, "..")
     data_path = os.path.join(project_root, "Data", "Denver_Traffic_Clean.csv")
-    
+
     try:
         df = pd.read_csv(data_path)
-    except FileNotFoundError:
-        st.error(f"Cleaned data file not found at {data_path}.")
-        return
     except Exception as e:
-        st.error(f"An error occurred while loading the data: {e}")
+        st.error(f"Error loading data at {data_path}: {e}")
         return
 
-    # --- Slider Logic ---
-    if 'chart_template_index' not in st.session_state:
-        st.session_state.chart_template_index = 0
+    neighborhood_incidents(df)
+    st.write("---")
 
-    templates = [render_template_0, render_template_1, render_template_2, render_template_3] 
-    num_templates = len(templates)
+    incidents_over_time(df)
+    st.write("---")
 
-    # --- Main Display Area ---
-    # This container will hold the currently selected chart template
-    with st.container():
-        current_template_func = templates[st.session_state.chart_template_index]
-        current_template_func(df)
+    type_distribution(df)
+    st.write("---")
 
-    # --- Navigation Controls Container ---
-    with st.container():
-        # Use columns to center the navigation elements
-        _, nav_col, _ = st.columns([1, 2, 1]) # Adjusted column ratio
-        with nav_col:
-            # The nav-container div will now be centered by the column layout
-            st.markdown('<div class="nav-container">', unsafe_allow_html=True)
-
-            # Use st.columns *inside* the nav-container for the button/dot layout
-            col_prev, col_dots, col_next = st.columns([1, 2, 1])
-
-            with col_prev:
-                if st.button("ΓÇ╣", key="prev_nav"): # use_container_width=True removed
-                    st.session_state.chart_template_index = (st.session_state.chart_template_index - 1) % num_templates
-                    st.rerun()
-
-            with col_dots:
-                dots_html = '<div class="dot-container">'
-                for i in range(num_templates):
-                    if i == st.session_state.chart_template_index:
-                        dots_html += '<span class="dot active"></span>'
-                    else:
-                        dots_html += '<span class="dot"></span>'
-                dots_html += '</div>'
-                st.markdown(dots_html, unsafe_allow_html=True)
-
-            with col_next:
-                if st.button("ΓÇ║", key="next_nav"): # use_container_width=True removed
-                    st.session_state.chart_template_index = (st.session_state.chart_template_index + 1) % num_templates
-                    st.rerun()
+    heatmap_incidents(df)
