@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
-from datetime import datetime
+from datetime import datetime, date # Import date from datetime
 
 # --- Data Loading and Caching ---
 @st.cache_data
@@ -43,27 +43,35 @@ def render_dashboard():
 
     # --- Main Page Filters ---
     with st.expander("Dashboard Filters", expanded=True):
-        col1, col2 = st.columns(2)
-        with col1:
-            # Date Range Filter
-            min_date = df["reported_date"].min().date()
-            max_date = df["reported_date"].max().date()
-            start_date = st.date_input("Start Date", min_date, min_value=min_date, max_value=max_date)
-            end_date = st.date_input("End Date", max_date, min_value=start_date, max_value=max_date)
+        # Date Range Slider
+        min_overall_date = df["reported_date"].min().date()
+        max_overall_date = df["reported_date"].max().date()
         
-        with col2:
-            # Neighborhood Multiselect Filter
-            neighborhoods = sorted(df["neighborhood_id"].dropna().unique())
-            selected_neighborhoods = st.multiselect(
-                "Neighborhoods",
-                options=neighborhoods,
-                default=neighborhoods[:5] # Default to first 5 for demonstration
-            )
+        # Ensure default value is within min/max range
+        default_start_date = min_overall_date
+        default_end_date = max_overall_date
+
+        selected_date_range = st.slider(
+            "Select Date Range",
+            min_value=min_overall_date,
+            max_value=max_overall_date,
+            value=(default_start_date, default_end_date),
+            format="MM/DD/YYYY"
+        )
+        start_date, end_date = selected_date_range
+
+        # Neighborhood Multiselect Filter
+        neighborhoods = sorted(df["neighborhood_id"].dropna().unique())
+        selected_neighborhoods = st.multiselect(
+            "Neighborhoods",
+            options=neighborhoods,
+            default=neighborhoods[:5] # Default to first 5 for demonstration
+        )
 
     # --- Filtering Logic ---
-    # Convert start_date and end_date to datetime for comparison
+    # Convert start_date and end_date from slider (date objects) to datetime for comparison
     start_datetime = pd.to_datetime(start_date)
-    end_datetime = pd.to_datetime(end_date).replace(hour=23, minute=59, second=59)
+    end_datetime = pd.to_datetime(end_date).replace(hour=23, minute=59, second=59) # End of the selected day
 
     # Apply filters to the DataFrame
     filtered_df = df[
