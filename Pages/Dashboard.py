@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
-from datetime import datetime, date # Import date from datetime
+from datetime import datetime, date
 
 # --- Data Loading and Caching ---
 @st.cache_data
@@ -17,14 +17,15 @@ def load_data():
     
     try:
         df = pd.read_csv(data_path)
-        # Convert date column to datetime, coercing errors to NaT (Not a Time)
         df["reported_date"] = pd.to_datetime(df["reported_date"], errors='coerce')
-        # Drop rows where date conversion failed
         df.dropna(subset=["reported_date"], inplace=True)
+        # Ensure injury/fatality columns are numeric
+        df['SERIOUSLY_INJURED'] = pd.to_numeric(df['SERIOUSLY_INJURED'], errors='coerce').fillna(0)
+        df['FATALITIES'] = pd.to_numeric(df['FATALITIES'], errors='coerce').fillna(0)
         return df
     except FileNotFoundError:
         st.error(f"Error: Data file not found at {data_path}")
-        return pd.DataFrame() # Return empty dataframe on error
+        return pd.DataFrame()
     except Exception as e:
         st.error(f"An error occurred while loading the data: {e}")
         return pd.DataFrame()
@@ -43,37 +44,29 @@ def render_dashboard():
 
     # --- Main Page Filters ---
     with st.expander("Dashboard Filters", expanded=True):
-        # Date Range Slider
         min_overall_date = df["reported_date"].min().date()
         max_overall_date = df["reported_date"].max().date()
         
-        # Ensure default value is within min/max range
-        default_start_date = min_overall_date
-        default_end_date = max_overall_date
-
         selected_date_range = st.slider(
             "Select Date Range",
             min_value=min_overall_date,
             max_value=max_overall_date,
-            value=(default_start_date, default_end_date),
+            value=(min_overall_date, max_overall_date),
             format="MM/DD/YYYY"
         )
         start_date, end_date = selected_date_range
 
-        # Neighborhood Multiselect Filter
         neighborhoods = sorted(df["neighborhood_id"].dropna().unique())
         selected_neighborhoods = st.multiselect(
             "Neighborhoods",
             options=neighborhoods,
-            default=neighborhoods[:5] # Default to first 5 for demonstration
+            default=neighborhoods[:5]
         )
 
     # --- Filtering Logic ---
-    # Convert start_date and end_date from slider (date objects) to datetime for comparison
     start_datetime = pd.to_datetime(start_date)
-    end_datetime = pd.to_datetime(end_date).replace(hour=23, minute=59, second=59) # End of the selected day
+    end_datetime = pd.to_datetime(end_date).replace(hour=23, minute=59, second=59)
 
-    # Apply filters to the DataFrame
     filtered_df = df[
         (df["reported_date"] >= start_datetime) &
         (df["reported_date"] <= end_datetime) &
@@ -88,15 +81,21 @@ def render_dashboard():
     st.header("Key Metrics")
     kpi1, kpi2, kpi3 = st.columns(3)
 
+    total_incidents = filtered_df.shape[0]
+    total_serious_injuries = filtered_df['SERIOUSLY_INJURED'].sum()
+    
+    # Calculate injury rate, handle division by zero
+    injury_rate = (total_serious_injuries / total_incidents * 100) if total_incidents > 0 else 0
+
     with kpi1:
         st.metric(
             label="Total Incidents",
-            value=f"{filtered_df.shape[0]:,}"
+            value=f"{total_incidents:,}"
         )
     with kpi2:
         st.metric(
-            label="Total Serious Injuries",
-            value=f"{int(filtered_df['SERIOUSLY_INJURED'].sum()):,}"
+            label="Serious Injury Rate",
+            value=f"{injury_rate:.2f}%"
         )
     with kpi3:
         st.metric(
@@ -112,7 +111,6 @@ def render_dashboard():
 
     with col1:
         st.subheader("Incident Map")
-        # Drop rows with missing lat/lon for mapping
         map_data = filtered_df[['geo_lat', 'geo_lon']].dropna()
         map_data.rename(columns={'geo_lat': 'lat', 'geo_lon': 'lon'}, inplace=True)
         if not map_data.empty:
@@ -149,7 +147,7 @@ def render_dashboard():
         - **Geographic Concentration:** Incidents are heavily concentrated in the selected neighborhoods, with hotspots often visible near major intersections or commercial zones.
         - **Time Sensitivity:** Use the date filter to explore seasonal trends. You may notice shifts in incident frequency during holidays or different seasons.
         - **Lighting Conditions Matter:** The bar chart reveals the distribution of accidents under different lighting. 'Daylight' typically has the highest raw count, but analyzing incidents during 'Dawn/Dusk' or 'Darkness' relative to traffic volume could reveal higher risk periods.
-        - **Filter Interaction:** Notice how the "Incidents by Light Condition" chart changes as you select or deselect neighborhoods, providing localized insights.
+        - **Filter Interaction:** Notice how the "Serious Injury Rate" and charts change as you select or deselect neighborhoods, providing localized insights.
         - **Data Limitation:** The map only shows incidents where precise geographic coordinates (latitude/longitude) were successfully recorded.
         """
     )
