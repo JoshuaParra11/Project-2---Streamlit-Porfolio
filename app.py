@@ -61,7 +61,7 @@ st.markdown("""
 
     /* --- Sidebar --- */
     div[data-testid="stHorizontalBlock"] > div:first-child {
-        background-color: #0E1117;
+        background-color: #0ffffff;
     }
 
     div[data-testid="stSidebar"] > div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"] > div:first-child {
